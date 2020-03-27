@@ -31,6 +31,14 @@ CREATE TABLE employee (
     FOREIGN KEY (manager_id) REFERENCES company_role(id)
 );
 
+CREATE TABLE managers (
+    id INT AUTO_INCREMENT NOT NULL,
+    first_name VARCHAR(30),
+    last_name VARCHAR(30),
+    PRIMARY KEY (id)
+);
+
 SELECT * FROM department;
 SELECT * FROM company_role;
 SELECT * FROM employee;
+SELECT * FROM managers;
