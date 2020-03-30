@@ -174,9 +174,10 @@ function removeEmployee() {
 	inquirer.prompt(questions.removeEmploy).then((answer) => {
 		let query = `DELETE FROM employee WHERE first_name = ? AND last_name = ?;`;
 
-		// answer.remove
+		let spl = answer.remove;
+		let newString = spl.split(' ');
 
-		connection.query(query, [ answer ], function(err, res) {
+		connection.query(query, [ newString[0], newString[1] ], function(err, res) {
 			if (err) throw err;
 
 			console.log('The employee was removed.');
@@ -190,12 +191,17 @@ function removeEmployee() {
 
 function updateEmployeeRole() {
 	inquirer.prompt(questions.updateEmployRole).then((answer) => {
-		let query = `UPDATE employee SET role_id = ? WHERE first_name = ? AND last_name = ?;`;
+		let query = `UPDATE employee SET role_id = ? WHERE id = ?;`;
 
-		// answer.selectEmp
-		// answer.newRole
+		// This will slice the string of the selection
+		let sli = answer.newRole;
+		let newSli = sli.slice(0, 1);
 
-		connection.query(query, [], function(err, res) {
+		// This will split the string of the selected employee
+		let sl = answer.selectEmp;
+		let newString = sl.slice(0, 1);
+
+		connection.query(query, [ newSli, newString ], function(err, res) {
 			if (err) throw err;
 
 			console.log('The employee role was updated.');
@@ -209,11 +215,17 @@ function updateEmployeeRole() {
 
 function updateEmployeeManager() {
 	inquirer.prompt(questions.updateEmployMan).then((answer) => {
-		let query = `UPDATE employee SET manager_id = ? WHERE first_name = ? AND last_name = ?;`;
+		let query = `UPDATE employee SET manager_id = ? WHERE id = ?;`;
 
-		// answer.selectEm
-		// answer.newMan
-		connection.query(query, [], function(err, res) {
+		// This will slice the string of the selection
+		let sli = answer.newMan;
+		let newSli = sli.slice(0, 1);
+
+		// This will split the string of the selected employee
+		let spl = answer.selectEm;
+		let newString = spl.slice(0, 1);
+
+		connection.query(query, [ newSli, newString ], function(err, res) {
 			if (err) throw err;
 
 			console.log('The employee manager was updated.');
