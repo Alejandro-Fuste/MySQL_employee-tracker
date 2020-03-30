@@ -82,10 +82,10 @@ function startPrompt() {
 // This function is to view all employees in the databse ==================================================
 
 function viewEmployess() {
-	let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
-	FROM department LEFT JOIN company_role ON department.id = company_role.department_id
-	INNER JOIN employee ON employee.id = company_role.id
-	INNER JOIN manager ON manager.id = employee.manager_id;`;
+	let query = `SELECT employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+	FROM department RIGHT JOIN company_role ON department.id = company_role.department_id 
+	RIGHT JOIN employee ON employee.id = company_role.id
+	RIGHT JOIN manager ON manager.id = employee.manager_id ORDER BY employee.id`;
 	connection.query(query, function(err, res) {
 		if (err) throw err;
 
@@ -100,10 +100,10 @@ function viewEmployess() {
 function viewByDepartment() {
 	inquirer.prompt(questions.viewDepart).then((answer) => {
 		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
-		FROM department LEFT JOIN company_role ON department.id = company_role.department_id
-		INNER JOIN employee ON employee.id = company_role.id
-		INNER JOIN manager ON manager.id = employee.manager_id
-		WHERE department.name_depart = ?;`;
+		FROM department RIGHT JOIN company_role ON department.id = company_role.department_id 
+		RIGHT JOIN employee ON employee.id = company_role.id
+		RIGHT JOIN manager ON manager.id = employee.manager_id
+		WHERE department.name_depart = ? ORDER BY employee.id;`;
 
 		connection.query(query, [ answer.department ], function(err, res) {
 			if (err) throw err;
@@ -122,7 +122,8 @@ function viewByManager() {
 		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
 		FROM department LEFT JOIN company_role ON department.id = company_role.department_id
 		RIGHT JOIN employee ON employee.id = company_role.id
-		INNER JOIN manager ON manager.id = employee.manager_id;`;
+		RIGHT JOIN manager ON manager.id = employee.manager_id
+		WHERE manager.manager = ?;`;
 
 		connection.query(query, [ answer.man ], function(err, res) {
 			if (err) throw err;
@@ -138,13 +139,19 @@ function viewByManager() {
 
 function addEmployee() {
 	inquirer.prompt(questions.addEmploy).then((answer) => {
+		let sl = answer.role;
+		let newSl = sl.slice(0, 1);
+
+		let sli = answer.manager;
+		let newSli = sli.slice(0, 1);
+
 		connection.query(
 			'INSERT INTO employee SET ?',
 			{
 				first_name: answer.fname,
 				last_name: answer.lname,
-				role_id: answer.role,
-				manager_id: answer.manager
+				role_id: newSl,
+				manager_id: newSli
 			},
 			function(err, res) {
 				if (err) throw err;
