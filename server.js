@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 var Table = require('cli-table');
 const questions = require('./lib/inquirer/questions');
+var figlet = require('figlet');
 
 const connection = mysql.createConnection({
 	host: 'localhost',
@@ -17,11 +18,24 @@ const connection = mysql.createConnection({
 	database: 'company_db'
 });
 
+fig();
+
 connection.connect(function(err) {
 	if (err) throw err;
 	// Put the function that starts the prompt here
 	startPrompt();
 });
+
+function fig() {
+	figlet('Employee Tracker', function(err, data) {
+		if (err) {
+			console.log('Something went wrong...');
+			console.dir(err);
+			return;
+		}
+		console.log(data);
+	});
+}
 
 // This function starts the CMS program ====================================================
 
@@ -43,28 +57,23 @@ function startPrompt() {
 				break;
 
 			case 'Add Employee':
-				//   songSearch();
-				console.log('4');
-				break;
-
-			case 'Add Role':
-				//   songAndAlbumSearch();
-				console.log('5');
-				break;
-
-			case 'Add Department':
-				//   songAndAlbumSearch();
-				console.log('6');
+				addEmployee();
 				break;
 
 			case 'Remove Employee':
-				//   songAndAlbumSearch();
-				console.log('7');
+				removeEmployee();
 				break;
 
 			case 'Update Employee':
-				//   songAndAlbumSearch();
-				console.log('8');
+				updateEmployee();
+				break;
+
+			case 'Update Employee Role':
+				updateEmployeeRole();
+				break;
+
+			case 'Update Employee Manager':
+				updateEmployeeManager();
 				break;
 
 			default:
@@ -116,9 +125,8 @@ function viewByManager() {
 	inquirer.prompt(questions.viewManager).then((answer) => {
 		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
 		FROM department LEFT JOIN company_role ON department.id = company_role.department_id
-		INNER JOIN employee ON employee.id = company_role.id
-		INNER JOIN manager ON manager.id = employee.manager_id
-		WHERE manager.manager = ?;`;
+		RIGHT JOIN employee ON employee.id = company_role.id
+		INNER JOIN manager ON manager.id = employee.manager_id;`;
 
 		connection.query(query, [ answer.man ], function(err, res) {
 			if (err) throw err;
@@ -133,5 +141,47 @@ function viewByManager() {
 // This function is to add an employee to the database ==================================================
 
 function addEmployee() {
-	inquirer.prompt(questions.viewManager).then((answer) => {});
+	inquirer.prompt(questions.addEmploy).then((answer) => {
+		connection.query(
+			'INSERT INTO employee SET ?',
+			{
+				first_name: answer.fname,
+				last_name: answer.lname,
+				role_id: answer.role,
+				manager_id: answer.manager
+			},
+			function(err, res) {
+				if (err) throw err;
+
+				startPrompt();
+			}
+		);
+
+		// let query = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+		// VALUES (?, ?, ?, ? );`;
+
+		// connection.query(query, [ answer.fname, answer.lname, answer.role, answer.manager ], function(err, res) {
+		// 	if (err) throw err;
+
+		// 	console.table(res.affectedRows);
+
+		// 	startPrompt();
+		// });
+	});
 }
+
+// This function is to remove an employee from the database ==================================================
+
+function removeEmployee() {}
+
+// This function is to update an employee to the database ==================================================
+
+function updateEmployee() {}
+
+// This function is to update an employee role to the database ==================================================
+
+function updateEmployeeRole() {}
+
+// This function is to update an employee role to the database ==================================================
+
+function updateEmployeeManager() {}
