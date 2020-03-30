@@ -20,6 +20,12 @@ CREATE TABLE company_role (
 
 );
 
+CREATE TABLE manager (
+    id INT AUTO_INCREMENT NOT NULL,
+    manager VARCHAR(50),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE employee (
     id INT AUTO_INCREMENT NOT NULL,
     first_name VARCHAR(30),
@@ -28,17 +34,17 @@ CREATE TABLE employee (
     manager_id INT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES company_role(id),
-    FOREIGN KEY (manager_id) REFERENCES company_role(id)
+    FOREIGN KEY (manager_id) REFERENCES manager(id)
 );
 
-CREATE TABLE managers (
-    id INT AUTO_INCREMENT NOT NULL,
-    first_name VARCHAR(30),
-    last_name VARCHAR(30),
-    PRIMARY KEY (id)
-);
 
-SELECT * FROM department;
-SELECT * FROM company_role;
-SELECT * FROM employee;
-SELECT * FROM managers;
+
+-- SELECT * FROM department;
+-- SELECT * FROM company_role;
+-- SELECT * FROM employee;
+-- SELECT * FROM managers;
+
+-- SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+-- FROM department LEFT JOIN company_role ON department.id = company_role.department_id
+-- INNER JOIN employee ON employee.id = company_role.id
+-- INNER JOIN manager ON manager.id = employee.manager_id;

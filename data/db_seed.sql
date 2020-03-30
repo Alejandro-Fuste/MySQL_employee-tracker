@@ -22,8 +22,7 @@ CREATE TABLE company_role (
 
 CREATE TABLE manager (
     id INT AUTO_INCREMENT NOT NULL,
-    first_name VARCHAR(30),
-    last_name VARCHAR(30),
+    manager VARCHAR(50),
     PRIMARY KEY (id)
 );
 
@@ -46,8 +45,8 @@ VALUES ('Sales'), ('Engineering'), ('Finance'), ('Legal');
 INSERT INTO company_role (title, salary, department_id)
 VALUES ('Sales Lead', 100000, 1), ('Salesperson', 80000, 1), ('Lead Engineer', 150000, 2), ('Software Engineer', 120000, 2), ('Accountant', 125000, 3), ('Legal Team Lead', 250000, 4), ('Lawyer', 190000, 4);
 
-INSERT INTO manager (first_name, last_name)
-VALUES ('Yoda', 'Unknown'), ('Obi-Wan', 'Kenobi'), ('Mace', 'Windu');
+INSERT INTO manager (manager)
+VALUES ('Yoda'), ('Obi-Wan Kenobi'), ('Mace Windu');
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ('Luke', 'Skywalker', 1, 1 ), ('Rey', 'Skywalker', 2, 1), ('Leia', 'Organa', 3, 2), ('Ben', 'Solo', 4, 2), ('Lando', 'Calrissian', 5, 3), ('Finn', 'Schwartz', 6, 3), ('Poe', 'Dameron', 7, 3);

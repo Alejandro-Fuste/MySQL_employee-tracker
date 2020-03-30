@@ -2,7 +2,6 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 var Table = require('cli-table');
 const questions = require('./lib/inquirer/questions');
-const f = require('./lib/functions/functions');
 
 const connection = mysql.createConnection({
 	host: 'localhost',
@@ -80,7 +79,11 @@ function startPrompt() {
 // This function is to view all employees in the databse ==================================================
 
 function viewEmployess() {
-	connection.query('SELECT * FROM employee;', function(err, res) {
+	let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+	FROM department LEFT JOIN company_role ON department.id = company_role.department_id
+	INNER JOIN employee ON employee.id = company_role.id
+	INNER JOIN manager ON manager.id = employee.manager_id;`;
+	connection.query(query, function(err, res) {
 		if (err) throw err;
 
 		console.table(res);
