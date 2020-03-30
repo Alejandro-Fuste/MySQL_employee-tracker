@@ -35,13 +35,11 @@ function startPrompt() {
 				break;
 
 			case 'View All Employees By Department':
-				//   multiSearch();
-				console.log('2');
+				viewByDepartment();
 				break;
 
-			case 'View All Roles':
-				//   rangeSearch();
-				console.log('3');
+			case 'View All Employees By Manager':
+				viewByManager();
 				break;
 
 			case 'Add Employee':
@@ -87,5 +85,53 @@ function viewEmployess() {
 		if (err) throw err;
 
 		console.table(res);
+
+		startPrompt();
 	});
+}
+
+// This function is to view all employees in the databse by department ==================================================
+
+function viewByDepartment() {
+	inquirer.prompt(questions.viewDepart).then((answer) => {
+		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+		FROM department LEFT JOIN company_role ON department.id = company_role.department_id
+		INNER JOIN employee ON employee.id = company_role.id
+		INNER JOIN manager ON manager.id = employee.manager_id
+		WHERE department.name_depart = ?;`;
+
+		connection.query(query, [ answer.department ], function(err, res) {
+			if (err) throw err;
+
+			console.table(res);
+
+			startPrompt();
+		});
+	});
+}
+
+// This function is to view all employees in the databse by their roles ==================================================
+
+function viewByManager() {
+	inquirer.prompt(questions.viewManager).then((answer) => {
+		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+		FROM department LEFT JOIN company_role ON department.id = company_role.department_id
+		INNER JOIN employee ON employee.id = company_role.id
+		INNER JOIN manager ON manager.id = employee.manager_id
+		WHERE manager.manager = ?;`;
+
+		connection.query(query, [ answer.man ], function(err, res) {
+			if (err) throw err;
+
+			console.table(res);
+
+			startPrompt();
+		});
+	});
+}
+
+// This function is to add an employee to the database ==================================================
+
+function addEmployee() {
+	inquirer.prompt(questions.viewManager).then((answer) => {});
 }
