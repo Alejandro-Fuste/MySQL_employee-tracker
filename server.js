@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-var Table = require('cli-table');
 const questions = require('./lib/inquirer/questions');
 var figlet = require('figlet');
 
@@ -83,8 +82,8 @@ function startPrompt() {
 
 function viewEmployess() {
 	let query = `SELECT employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
-	FROM department RIGHT JOIN company_role ON department.id = company_role.department_id 
-	RIGHT JOIN employee ON employee.id = company_role.id
+	FROM department RIGHT JOIN company_role ON department.id = company_role.department_id
+	RIGHT JOIN employee ON company_role.id = employee.role_id
 	RIGHT JOIN manager ON manager.id = employee.manager_id ORDER BY employee.id`;
 	connection.query(query, function(err, res) {
 		if (err) throw err;
@@ -99,9 +98,9 @@ function viewEmployess() {
 
 function viewByDepartment() {
 	inquirer.prompt(questions.viewDepart).then((answer) => {
-		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
-		FROM department RIGHT JOIN company_role ON department.id = company_role.department_id 
-		RIGHT JOIN employee ON employee.id = company_role.id
+		let query = `SELECT employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+		FROM department RIGHT JOIN company_role ON department.id = company_role.department_id
+		RIGHT JOIN employee ON company_role.id = employee.role_id
 		RIGHT JOIN manager ON manager.id = employee.manager_id
 		WHERE department.name_depart = ? ORDER BY employee.id;`;
 
@@ -119,11 +118,11 @@ function viewByDepartment() {
 
 function viewByManager() {
 	inquirer.prompt(questions.viewManager).then((answer) => {
-		let query = `SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
-		FROM department LEFT JOIN company_role ON department.id = company_role.department_id
-		RIGHT JOIN employee ON employee.id = company_role.id
-		RIGHT JOIN manager ON manager.id = employee.manager_id
-		WHERE manager.manager = ?;`;
+		let query = `SELECT employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+		FROM department RIGHT JOIN company_role ON department.id = company_role.department_id
+		RIGHT JOIN employee ON company_role.id = employee.role_id
+		RIGHT JOIN manager ON manager.id = employee.manager_id 
+		WHERE manager.manager = ? ORDER BY employee.id;`;
 
 		connection.query(query, [ answer.man ], function(err, res) {
 			if (err) throw err;
@@ -161,17 +160,6 @@ function addEmployee() {
 				startPrompt();
 			}
 		);
-
-		// let query = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-		// VALUES (?, ?, ?, ? );`;
-
-		// connection.query(query, [ answer.fname, answer.lname, answer.role, answer.manager ], function(err, res) {
-		// 	if (err) throw err;
-
-		// 	console.table(res.affectedRows);
-
-		// 	startPrompt();
-		// });
 	});
 }
 
