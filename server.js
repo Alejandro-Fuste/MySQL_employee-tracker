@@ -64,10 +64,6 @@ function startPrompt() {
 				removeEmployee();
 				break;
 
-			case 'Update Employee':
-				updateEmployee();
-				break;
-
 			case 'Update Employee Role':
 				updateEmployeeRole();
 				break;
@@ -153,6 +149,8 @@ function addEmployee() {
 			function(err, res) {
 				if (err) throw err;
 
+				console.log('The employee was added.');
+
 				startPrompt();
 			}
 		);
@@ -172,16 +170,55 @@ function addEmployee() {
 
 // This function is to remove an employee from the database ==================================================
 
-function removeEmployee() {}
+function removeEmployee() {
+	inquirer.prompt(questions.removeEmploy).then((answer) => {
+		let query = `DELETE FROM employee WHERE first_name = ? AND last_name = ?;`;
 
-// This function is to update an employee to the database ==================================================
+		// answer.remove
 
-function updateEmployee() {}
+		connection.query(query, [ answer ], function(err, res) {
+			if (err) throw err;
+
+			console.log('The employee was removed.');
+
+			startPrompt();
+		});
+	});
+}
 
 // This function is to update an employee role to the database ==================================================
 
-function updateEmployeeRole() {}
+function updateEmployeeRole() {
+	inquirer.prompt(questions.updateEmployRole).then((answer) => {
+		let query = `UPDATE employee SET role_id = ? WHERE first_name = ? AND last_name = ?;`;
+
+		// answer.selectEmp
+		// answer.newRole
+
+		connection.query(query, [], function(err, res) {
+			if (err) throw err;
+
+			console.log('The employee role was updated.');
+
+			startPrompt();
+		});
+	});
+}
 
 // This function is to update an employee role to the database ==================================================
 
-function updateEmployeeManager() {}
+function updateEmployeeManager() {
+	inquirer.prompt(questions.updateEmployMan).then((answer) => {
+		let query = `UPDATE employee SET manager_id = ? WHERE first_name = ? AND last_name = ?;`;
+
+		// answer.selectEm
+		// answer.newMan
+		connection.query(query, [], function(err, res) {
+			if (err) throw err;
+
+			console.log('The employee manager was updated.');
+
+			startPrompt();
+		});
+	});
+}
