@@ -59,6 +59,14 @@ function startPrompt() {
 				addEmployee();
 				break;
 
+			case 'Add Department':
+				addDepartment();
+				break;
+
+			case 'Add Role':
+				addRole();
+				break;
+
 			case 'Remove Employee':
 				removeEmployee();
 				break;
@@ -163,6 +171,46 @@ function addEmployee() {
 	});
 }
 
+// This function is to add a department to the database ==================================================
+function addDepartment() {
+	inquirer.prompt(questions.addDepartment).then((answer) => {
+		connection.query(
+			'INSERT INTO department SET ?',
+			{
+				name_depart: answer.depart
+			},
+			function(err, res) {
+				if (err) throw err;
+
+				console.log('The department was added.');
+
+				startPrompt();
+			}
+		);
+	});
+}
+
+// This function is to add a role to the database ==================================================
+function addRole() {
+	inquirer.prompt(questions.addRole).then((answer) => {
+		connection.query(
+			'INSERT INTO employee SET ?',
+			{
+				title: answer.fname,
+				salary: answer.lname,
+				department_id: newSl
+			},
+			function(err, res) {
+				if (err) throw err;
+
+				console.log('The department was added.');
+
+				startPrompt();
+			}
+		);
+	});
+}
+
 // This function is to remove an employee from the database ==================================================
 
 function removeEmployee() {
@@ -213,14 +261,16 @@ function updateEmployeeManager() {
 		let query = `UPDATE employee SET manager_id = ? WHERE id = ?;`;
 
 		// This will slice the string of the selection
-		let sli = answer.newMan;
-		let newSli = sli.slice(0, 1);
+		let sli = questions.updateEmployMan[0].choices;
+
+		let newSli = sli.indexOf(answer.selectEm);
 
 		// This will split the string of the selected employee
-		let spl = answer.selectEm;
-		let newString = spl.slice(0, 1);
+		let spl = questions.updateEmployMan[1].choices;
 
-		connection.query(query, [ newSli, newString ], function(err, res) {
+		let newString = spl.indexOf(answer.newMan);
+
+		connection.query(query, [ newString, newSli ], function(err, res) {
 			if (err) throw err;
 
 			console.log('The employee manager was updated.');
