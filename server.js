@@ -192,22 +192,54 @@ function addDepartment() {
 
 // This function is to add a role to the database ==================================================
 function addRole() {
-	inquirer.prompt(questions.addRole).then((answer) => {
-		connection.query(
-			'INSERT INTO employee SET ?',
-			{
-				title: answer.fname,
-				salary: answer.lname,
-				department_id: newSl
-			},
-			function(err, res) {
-				if (err) throw err;
+	// Query to get updated department list
+	let query = `SELECT department.name_depart
+	FROM company_db.department ORDER BY department.id;`;
 
-				console.log('The department was added.');
+	connection.query(query, function(err, res) {
+		if (err) throw err;
 
-				startPrompt();
-			}
-		);
+		const depList = res.map((dep) => dep.name_depart);
+
+		inquirer
+			.prompt([
+				{
+					type: 'input',
+					name: 'rol',
+					message: 'What role (title) would you like to add?'
+				},
+				{
+					type: 'input',
+					name: 'sal',
+					message: 'How much will the salary be?'
+				},
+				{
+					type: 'list',
+					name: 'dep',
+					message: 'What department will this role be added to?',
+					choices: depList
+				}
+			])
+			.then((answer) => {
+				let depIndex = depList.indexOf(answer.dep);
+				connection.query(
+					'INSERT INTO company_role SET ?',
+					{
+						title: answer.rol,
+						salary: answer.sal,
+						department_id: depIndex
+					},
+					function(err, res) {
+						if (err) throw err;
+
+						console.log('The department was added.');
+
+						startPrompt();
+					}
+				);
+			});
+
+		// Query to add role to company_role table
 	});
 }
 
