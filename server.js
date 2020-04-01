@@ -145,29 +145,66 @@ function viewByManager() {
 // This function is to add an employee to the database ==================================================
 
 function addEmployee() {
-	inquirer.prompt(questions.addEmploy).then((answer) => {
-		let sl = answer.role;
-		let newSl = sl.slice(0, 1);
+	let query = `SELECT company_role.title
+	FROM company_db.company_role ORDER BY company_role.id;`;
 
-		let sli = answer.manager;
-		let newSli = sli.slice(0, 1);
+	connection.query(query, function(err, res) {
+		if (err) throw err;
 
-		connection.query(
-			'INSERT INTO employee SET ?',
-			{
-				first_name: answer.fname,
-				last_name: answer.lname,
-				role_id: newSl,
-				manager_id: newSli
-			},
-			function(err, res) {
-				if (err) throw err;
+		const titleList = res.map((t) => t.title);
 
-				console.log('The employee was added.');
+		connection.query(`SELECT manager.manager FROM company_db.manager ORDER BY manager.id;`, function(err, res) {
+			if (err) throw err;
 
-				startPrompt();
-			}
-		);
+			const manList = res.map((m) => m.manager);
+
+			inquirer
+				.prompt([
+					{
+						type: 'input',
+						name: 'fname',
+						message: 'What is the first name of the employee?'
+					},
+					{
+						type: 'input',
+						name: 'lname',
+						message: 'What is the last name of the employee?'
+					},
+					{
+						type: 'list',
+						name: 'role',
+						message: 'What is the role of the employee?',
+						choices: titleList
+					},
+					{
+						type: 'list',
+						name: 'manager',
+						message: 'Who is the manager of the employee?',
+						choices: manList
+					}
+				])
+				.then((answer) => {
+					let roleIndex = titleList.indexOf(answer.role) + 1;
+					let manIndex = manList.indexOf(answer.manager) + 1;
+
+					connection.query(
+						'INSERT INTO employee SET ?',
+						{
+							first_name: answer.fname,
+							last_name: answer.lname,
+							role_id: roleIndex,
+							manager_id: manIndex
+						},
+						function(err, res) {
+							if (err) throw err;
+
+							console.log('The employee was added.');
+
+							startPrompt();
+						}
+					);
+				});
+		});
 	});
 }
 
