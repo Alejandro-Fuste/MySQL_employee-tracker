@@ -145,20 +145,38 @@ function viewByDepartment() {
 // This function is to view all employees in the databse by their roles ==================================================
 
 function viewByManager() {
-	inquirer.prompt(questions.viewManager).then((answer) => {
-		let query = `SELECT employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
-		FROM department RIGHT JOIN company_role ON department.id = company_role.department_id
-		RIGHT JOIN employee ON company_role.id = employee.role_id
-		RIGHT JOIN manager ON manager.id = employee.manager_id 
-		WHERE manager.manager = ? ORDER BY employee.id;`;
+	let query = `SELECT manager.manager
+	FROM company_db.manager ORDER BY manager.id;`;
 
-		connection.query(query, [ answer.man ], function(err, res) {
-			if (err) throw err;
+	connection.query(query, function(err, res) {
+		if (err) throw err;
 
-			console.table(res);
+		const managerList = res.map((m) => m.manager);
 
-			startPrompt();
-		});
+		inquirer
+			.prompt({
+				type: 'list',
+				name: 'man',
+				message: 'Select the manager to see his employees',
+				choices: managerList
+			})
+			.then((answer) => {
+				let roleIndex = managerList.indexOf(answer.man) + 1;
+
+				let query = `SELECT employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
+			FROM department RIGHT JOIN company_role ON department.id = company_role.department_id
+			RIGHT JOIN employee ON company_role.id = employee.role_id
+			RIGHT JOIN manager ON manager.id = employee.manager_id
+			WHERE manager.id = ? ORDER BY employee.id;`;
+
+				connection.query(query, [ roleIndex ], function(err, res) {
+					if (err) throw err;
+
+					console.table(res);
+
+					startPrompt();
+				});
+			});
 	});
 }
 
