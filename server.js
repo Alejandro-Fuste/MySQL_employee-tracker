@@ -321,49 +321,84 @@ function addRole() {
 // This function is to remove an employee from the database ==================================================
 
 function removeEmployee() {
-	inquirer.prompt(questions.removeEmploy).then((answer) => {
-		let query = `DELETE FROM employee WHERE first_name = ? AND last_name = ?;`;
+	let query = `SELECT employee.first_name, employee.last_name
+	FROM company_db.employee ORDER BY employee.id;`;
 
-		let spl = answer.remove;
-		let newString = spl.split(' ');
+	connection.query(query, function(err, res) {
+		if (err) throw err;
 
-		connection.query(query, [ newString[0], newString[1] ], function(err, res) {
-			if (err) throw err;
+		const emplList = res.map((e) => e.first_name + ' ' + e.last_name);
 
-			console.log('The employee was removed.');
+		inquirer
+			.prompt({
+				type: 'list',
+				name: 'remove',
+				message: 'Which employee would you like to remove?',
+				choices: emplList
+			})
+			.then((answer) => {
+				let roleIndex = emplList.indexOf(answer.remove) + 1;
 
-			startPrompt();
-		});
+				let query = `DELETE FROM employee WHERE id = ?;`;
+
+				connection.query(query, [ roleIndex ], function(err, res) {
+					if (err) throw err;
+
+					console.log('The employee was removed.');
+
+					startPrompt();
+				});
+			});
 	});
 }
 
 // This function is to update an employee role to the database ==================================================
 
 function updateEmployeeRole() {
-	inquirer.prompt(questions.updateEmployRole).then((answer) => {
-		let query = `UPDATE employee SET role_id = ? WHERE id = ?;`;
+	let query = `SELECT employee.first_name, employee.last_name
+	FROM company_db.employee ORDER BY employee.id;`;
 
-		// This will slice the string of the selection
-		let sli = answer.newRole;
-		let newSli = sli.slice(0, 1);
+	connection.query(query, function(err, res) {
+		if (err) throw err;
 
-		// This will split the string of the selected employee
-		let sl = answer.selectEmp;
-		let newString = sl.slice(0, 1);
+		const emplList = res.map((e) => e.first_name + ' ' + e.last_name);
 
-		connection.query(query, [ newSli, newString ], function(err, res) {
-			if (err) throw err;
-
-			console.log('The employee role was updated.');
-
-			startPrompt();
-		});
+		console.log(emplList);
 	});
+
+	// inquirer.prompt(questions.updateEmployRole).then((answer) => {
+	// 	let query = `UPDATE employee SET role_id = ? WHERE id = ?;`;
+
+	// 	// This will slice the string of the selection
+	// 	let sli = answer.newRole;
+	// 	let newSli = sli.slice(0, 1);
+
+	// 	// This will split the string of the selected employee
+	// 	let sl = answer.selectEmp;
+	// 	let newString = sl.slice(0, 1);
+
+	// 	connection.query(query, [ newSli, newString ], function(err, res) {
+	// 		if (err) throw err;
+
+	// 		console.log('The employee role was updated.');
+
+	// 		startPrompt();
+	// 	});
+	// });
 }
 
 // This function is to update an employee role to the database ==================================================
 
 function updateEmployeeManager() {
+	let query = `SELECT department.name_depart
+	FROM company_db.department ORDER BY department.id;`;
+
+	connection.query(query, function(err, res) {
+		if (err) throw err;
+
+		const depList = res.map((dep) => dep.name_depart);
+	});
+
 	inquirer.prompt(questions.updateEmployMan).then((answer) => {
 		let query = `UPDATE employee SET manager_id = ? WHERE id = ?;`;
 
