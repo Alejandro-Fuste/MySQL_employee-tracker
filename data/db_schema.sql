@@ -39,18 +39,4 @@ CREATE TABLE employee (
 
 
 
--- SELECT * FROM department;
--- SELECT * FROM company_role;
--- SELECT * FROM employee;
--- SELECT * FROM managers;
-
--- SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
--- FROM department LEFT JOIN company_role ON department.id = company_role.department_id
--- INNER JOIN employee ON employee.id = company_role.id
--- INNER JOIN manager ON manager.id = employee.manager_id;
-
--- SELECT  employee.id, employee.first_name, employee.last_name, company_role.title, department.name_depart, company_role.salary, manager.manager
--- FROM department LEFT JOIN company_role ON department.id = company_role.department_id
--- RIGHT JOIN employee ON employee.id = company_role.id
--- INNER JOIN manager ON manager.id = employee.manager_id;
 
