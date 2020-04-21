@@ -4,7 +4,7 @@
 
 ## Description 
 
-The purpose of this application is to create a CMS interface where non-developers can interact with information stored in a database. 
+The purpose of this application is to create a CMS interface where non-developers can interact with information stored in a MySQL database. 
 
 ## User Story
 
