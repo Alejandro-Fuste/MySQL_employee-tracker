@@ -2,11 +2,11 @@
 # Employee Tracker [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 <table><tr><td>
-<img align="center" src="./assets/empTrack1.gif" alt="finished gif" width="838" height="380"/>
+<img align="center" src="./assets/empTrack1.gif" alt="finished gif" width="238" height="180"/>
 
-<img align="center" src="./assets/empTrack2.gif" alt="finished gif" width="838" height="380"/>
+<img align="center" src="./assets/empTrack2.gif" alt="finished gif" width="238" height="180"/>
 
-<img align="center" src="./assets/empTrack3.gif" alt="finished gif" width="838" height="380"/>
+<img align="center" src="./assets/empTrack3.gif" alt="finished gif" width="238" height="180"/>
 </table></tr></td>
 
 ## Description 
